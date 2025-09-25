@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>STT 성능 테스트</title>
+    <link rel="stylesheet" th:href="@{/css/upload.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>STT 성능 테스트</h1>
+
+        <div th:if="${message}" class="message" th:classappend="${message.contains('성공') ? 'success' : 'error'}">
+            <p th:text="${message}"></p>
+        </div>
+
+        <form method="POST" action="/upload" enctype="multipart/form-data">
+            <label for="files">음성 파일 및 정답 텍스트 파일 선택 (여러 파일 선택 가능):</label>
+            <input type="file" id="files" name="files" multiple accept=".wav,.mp3,.txt">
+            <button type="submit">업로드</button>
+        </form>
+    </div>
+</body>
+</html>
