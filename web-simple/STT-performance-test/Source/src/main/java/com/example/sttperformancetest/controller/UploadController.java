@@ -7,13 +7,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.example.sttperformancetest.service.FileStorageService;
+import com.example.sttperformancetest.service.SttService;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
 public class UploadController {
+
+    private final FileStorageService fileStorageService;
+    private final SttService sttService;
+
+    public UploadController(FileStorageService fileStorageService, SttService sttService) {
+        this.fileStorageService = fileStorageService;
+        this.sttService = sttService;
+    }
 
     @GetMapping("/")
     public String showUploadForm() {
@@ -29,16 +40,26 @@ public class UploadController {
             return "redirect:/";
         }
 
-        String uploadedFileNames = Arrays.stream(files)
-                .map(MultipartFile::getOriginalFilename)
-                .collect(Collectors.joining(", "));
+        List<String> storedFileNames = fileStorageService.storeFiles(files);
 
-        log.info("Uploaded files: {}", uploadedFileNames);
+        if (storedFileNames.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "파일 저장에 실패했습니다.");
+            return "redirect:/";
+        }
 
-        // TODO: 파일 저장 및 CER 계산 로직 추가
+        log.info("Stored files: {}", String.join(", ", storedFileNames));
+
+        // STT API 연동 및 결과 반환 로직 추가
+        for (MultipartFile file : files) {
+            if (file.getOriginalFilename() != null && (file.getOriginalFilename().endsWith(".wav") || file.getOriginalFilename().endsWith(".mp3"))) {
+                String sttResult = sttService.convertSpeechToText(file);
+                log.info("STT Result for {}: {}", file.getOriginalFilename(), sttResult);
+                // TODO: 이 결과를 화면에 표시하거나 CER 계산에 사용
+            }
+        }
 
         redirectAttributes.addFlashAttribute("message",
-                "파일이 성공적으로 업로드되었습니다: " + uploadedFileNames);
+                "파일이 성공적으로 업로드되었고 STT 변환이 시도되었습니다: " + String.join(", ", storedFileNames));
 
         return "redirect:/";
     }
