@@ -1,4 +1,4 @@
-package com.example.sttperformancetest.controller;
+package com.yunit.stt_performance_test.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.example.sttperformancetest.service.FileStorageService;
-import com.example.sttperformancetest.service.SttService;
+import com.yunit.stt_performance_test.service.FileStorageService;
+import com.yunit.stt_performance_test.service.SttService;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Controller

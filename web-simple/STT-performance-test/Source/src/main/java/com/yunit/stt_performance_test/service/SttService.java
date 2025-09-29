@@ -1,4 +1,4 @@
-package com.example.sttperformancetest.service;
+package com.yunit.stt_performance_test.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
