@@ -13,11 +13,21 @@
             <p th:text="${message}"></p>
         </div>
 
-        <form method="POST" action="/upload" enctype="multipart/form-data">
-            <label for="files">음성 파일 및 정답 텍스트 파일 선택 (여러 파일 선택 가능):</label>
-            <input type="file" id="files" name="files" multiple accept=".wav,.mp3,.txt">
+        <form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
+            <label for="fileInput" class="file-input-label">음성 파일 및 정답 텍스트 파일 선택 (여러 파일 선택 가능):</label>
+            <input type="file" id="fileInput" name="files" multiple accept=".wav,.mp3,.txt" style="display: none;">
+
+            <div id="drop-zone">
+                <p>여기에 파일을 드래그 앤 드롭하거나, 위 버튼을 클릭하세요.</p>
+            </div>
+
+            <ul id="file-list">
+                <!-- 선택된 파일들이 여기에 동적으로 추가됩니다 -->
+            </ul>
+
             <button type="submit">업로드</button>
         </form>
     </div>
+    <script th:src="@{/js/upload.js}"></script>
 </body>
 </html>
