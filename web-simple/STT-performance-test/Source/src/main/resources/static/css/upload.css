@@ -70,3 +70,42 @@ button:hover { background-color: #0056b3; }
 .remove-file-btn:hover {
     background-color: #c82333;
 }
+
+/* Styles for CER Results Table */
+.cer-results-section {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.cer-results-section h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.cer-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.cer-table th, .cer-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    word-break: break-word; /* 긴 텍스트 줄바꿈 */
+}
+
+.cer-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.cer-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.cer-table tbody tr:hover {
+    background-color: #f1f1f1;
+}

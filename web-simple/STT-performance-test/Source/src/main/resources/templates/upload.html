@@ -27,6 +27,32 @@
 
             <button type="submit">업로드</button>
         </form>
+
+        <div th:if="${cerResults}" class="cer-results-section">
+            <h2>CER 계산 결과</h2>
+            <table class="cer-table">
+                <thead>
+                    <tr>
+                        <th>파일</th>
+                        <th>참조 텍스트</th>
+                        <th>가설 텍스트</th>
+                        <th>CER (Mode A)</th>
+                        <th>CER (Mode B)</th>
+                        <th>오류</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="result : ${cerResults}">
+                        <td th:text="${result.originalFileName}"></td>
+                        <td th:text="${result.referenceText}"></td>
+                        <td th:text="${result.hypothesisText}"></td>
+                        <td th:text="${#numbers.formatDecimal(result.cerModeA, 1, 4)}"></td>
+                        <td th:text="${#numbers.formatDecimal(result.cerModeB, 1, 4)}"></td>
+                        <td th:text="${result.errorMessage}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <script th:src="@{/js/upload.js}"></script>
 </body>

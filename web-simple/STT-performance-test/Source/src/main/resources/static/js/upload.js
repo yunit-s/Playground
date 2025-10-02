@@ -86,32 +86,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle form submission
     uploadForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // Prevent default form submission
-
         if (selectedFiles.length === 0) {
             alert('업로드할 파일을 선택해주세요.');
+            e.preventDefault(); // 파일이 없을 경우에만 제출 방지
             return;
         }
 
-        const formData = new FormData();
-        selectedFiles.forEach(file => {
-            formData.append('files', file); // 'files' must match @RequestParam("files") in controller
-        });
+        // selectedFiles 배열의 파일들을 실제 fileInput 요소에 할당하여 폼이 자연스럽게 제출되도록 합니다.
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
+        fileInput.files = dataTransfer.files;
 
-        // Submit the form data using fetch API
-        fetch(uploadForm.action, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text()) // Assuming controller returns a redirect string or message
-        .then(html => {
-            // For simplicity, reload the page to show flash attributes
-            // In a real app, you might parse the HTML or JSON response
-            window.location.reload();
-        })
-        .catch(error => {
-            console.error('Error during file upload:', error);
-            alert('파일 업로드 중 오류가 발생했습니다.');
-        });
+        // 이제 폼이 자연스럽게 제출되도록 e.preventDefault()를 제거합니다.
+        // 폼이 제출되면 서버에서 리다이렉트 응답을 보내고, 브라우저가 이를 따라갑니다.
+        // flash attribute는 이 과정에서 유지됩니다.
     });
 });
