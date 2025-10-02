@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.yunit.stt_performance_test.service.FileStorageService;
 import com.yunit.stt_performance_test.service.SttService;
 
@@ -34,25 +35,25 @@ public class UploadController {
     }
 
     @GetMapping("/")
-    public String showUploadForm() {
+    public String showUploadForm(Model model) {
         return "upload";
     }
 
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("files") MultipartFile[] files,
-                                   Model model) {
+                                   RedirectAttributes redirectAttributes) {
 
         if (files == null || files.length == 0 || files[0].isEmpty()) {
-            model.addAttribute("message", "업로드할 파일을 선택해주세요.");
-            return "upload";
+            redirectAttributes.addFlashAttribute("message", "업로드할 파일을 선택해주세요.");
+            return "redirect:/";
         }
 
         // 1. 파일 저장
         List<String> storedFileNames = fileStorageService.storeFiles(files);
 
         if (storedFileNames.isEmpty()) {
-            model.addAttribute("message", "파일 저장에 실패했습니다.");
-            return "upload";
+            redirectAttributes.addFlashAttribute("message", "파일 저장에 실패했습니다.");
+            return "redirect:/";
         }
 
         log.info("Stored files: {}", String.join(", ", storedFileNames));
@@ -115,11 +116,11 @@ public class UploadController {
             }
         }
 
-        model.addAttribute("message",
+        redirectAttributes.addFlashAttribute("message",
                 "파일이 성공적으로 업로드되었고 CER 계산이 완료되었습니다.");
-        model.addAttribute("cerResults", cerResults); // CER 결과 리스트 전달
+        redirectAttributes.addFlashAttribute("cerResults", cerResults); // CER 결과 리스트 전달
 
-        return "upload";
+        return "redirect:/";
     }
 
     private String getBaseName(String fileName) {
