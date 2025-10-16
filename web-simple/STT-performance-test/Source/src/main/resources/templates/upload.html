@@ -4,33 +4,46 @@
     <meta charset="UTF-8">
     <title>STT 성능 테스트</title>
     <link rel="stylesheet" th:href="@{/css/upload.css}">
+    <link rel="stylesheet" th:href="@{/css/toast.css}">
 </head>
 <body>
     <div class="container">
         <h1>STT 성능 테스트</h1>
 
-        <div th:if="${message}" class="message" th:classappend="${message.contains('성공') ? 'success' : 'error'}">
-            <p th:text="${message}"></p>
-        </div>
 
         <form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
-            <label for="fileInput" class="file-input-label">음성 파일 및 정답 텍스트 파일 선택 (여러 파일 선택 가능):</label>
-            <input type="file" id="fileInput" name="files" multiple accept=".wav,.mp3,.txt" style="display: none;">
+            <!-- Hidden file inputs for form submission -->
+            <input type="file" id="wavFiles" name="files" multiple accept=".wav,.mp3" style="display: none;">
+            <input type="file" id="txtFiles" name="files" multiple accept=".txt" style="display: none;">
 
-            <div id="drop-zone">
-                <p>여기에 파일을 드래그 앤 드롭하거나, 위 버튼을 클릭하세요.</p>
+            <div class="drop-zone-container">
+                <div class="drop-zone-wrapper">
+                    <h3 class="upload-title">음성 파일 (WAV, MP3)</h3>
+                    <div id="wav-drop-zone" class="drop-zone">
+                        <p>여기에 파일을 드래그 앤 드롭하거나, 이 영역을 클릭하세요.</p>
+                    </div>
+                    <ul id="wav-file-list" class="file-list">
+                        <!-- WAV files will be listed here -->
+                    </ul>
+                </div>
+
+                <div class="drop-zone-wrapper">
+                    <h3 class="upload-title">정답 텍스트 파일 (TXT)</h3>
+                    <div id="txt-drop-zone" class="drop-zone">
+                        <p>여기에 파일을 드래그 앤 드롭하거나, 이 영역을 클릭하세요.</p>
+                    </div>
+                    <ul id="txt-file-list" class="file-list">
+                        <!-- TXT files will be listed here -->
+                    </ul>
+                </div>
             </div>
-
-            <ul id="file-list">
-                <!-- 선택된 파일들이 여기에 동적으로 추가됩니다 -->
-            </ul>
 
             <button type="submit">업로드</button>
         </form>
 
         <div th:if="${cerResults}" class="cer-results-section">
             <h2>CER 계산 결과</h2>
-            <div class="download-section" style="margin-bottom: 15px;">
+            <div class="download-section" style="text-align: right; margin-bottom: 15px;">
                 <a th:href="@{/download}" class="button">Excel 다운로드</a>
             </div>
             <table class="cer-table">
@@ -57,6 +70,20 @@
             </table>
         </div>
     </div>
+    <script th:src="@{/js/toast.js}"></script>
     <script th:src="@{/js/upload.js}"></script>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const message = /*[[${message}]]*/ null;
+        if (message) {
+            // This function will be defined in upload.js
+            showToast(message, message.includes('성공') ? 'success' : 'error');
+        }
+        /*]]>*/
+    </script>
 </body>
 </html>
