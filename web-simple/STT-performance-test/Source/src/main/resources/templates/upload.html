@@ -30,6 +30,9 @@
 
         <div th:if="${cerResults}" class="cer-results-section">
             <h2>CER 계산 결과</h2>
+            <div class="download-section" style="margin-bottom: 15px;">
+                <a th:href="@{/download}" class="button">Excel 다운로드</a>
+            </div>
             <table class="cer-table">
                 <thead>
                     <tr>
