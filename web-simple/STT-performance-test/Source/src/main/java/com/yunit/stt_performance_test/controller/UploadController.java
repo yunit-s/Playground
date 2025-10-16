@@ -126,8 +126,12 @@ public class UploadController {
 
         ByteArrayInputStream in = excelService.createExcelFile(cerResults);
 
+        // 파일명에 현재 시간 추가 (yyyyMMdd_HHmmssSSS 형식)
+        String timeStamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(new java.util.Date());
+        String fileName = "cer-results_" + timeStamp + ".xlsx";
+
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=cer_results.xlsx");
+        headers.add("Content-Disposition", "attachment; filename=" + fileName);
 
         return ResponseEntity
                 .ok()
