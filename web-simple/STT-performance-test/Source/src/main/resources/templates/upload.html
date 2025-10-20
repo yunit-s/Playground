@@ -2,14 +2,13 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>STT 성능 테스트</title>
+    <title>음성인식 성능 테스트</title>
     <link rel="stylesheet" th:href="@{/css/upload.css}">
     <link rel="stylesheet" th:href="@{/css/toast.css}">
 </head>
 <body>
     <div class="container">
-        <h1>STT 성능 테스트</h1>
-
+        <h1>음성인식 성능 테스트</h1>
 
         <form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
             <!-- Hidden file inputs for form submission -->
@@ -38,11 +37,11 @@
                 </div>
             </div>
 
-            <button type="submit">업로드</button>
+            <button type="submit">STT 실행</button>
         </form>
 
         <div th:if="${cerResults}" class="cer-results-section">
-            <h2>CER 계산 결과</h2>
+            <h2>STT 실행 결과</h2>
             <div class="download-section" style="text-align: right; margin-bottom: 15px;">
                 <a th:href="@{/download}" class="button">Excel 다운로드</a>
             </div>
@@ -50,10 +49,10 @@
                 <thead>
                     <tr>
                         <th>파일</th>
-                        <th>참조 텍스트</th>
-                        <th>가설 텍스트</th>
-                        <th>CER (Mode A)</th>
-                        <th>CER (Mode B)</th>
+                        <th>참조 텍스트(정답 텍스트)</th>
+                        <th>가설 텍스트(STT 결과)</th>
+<!--                        <th>CER (Mode A)</th>-->
+                        <th>CER</th>
                         <th>오류</th>
                     </tr>
                 </thead>
@@ -62,7 +61,7 @@
                         <td th:text="${result.originalFileName}"></td>
                         <td th:text="${result.referenceText}"></td>
                         <td th:text="${result.hypothesisText}"></td>
-                        <td th:text="${#numbers.formatDecimal(result.cerModeA, 1, 4)}"></td>
+<!--                        <td th:text="${#numbers.formatDecimal(result.cerModeA, 1, 4)}"></td>-->
                         <td th:text="${#numbers.formatDecimal(result.cerModeB, 1, 4)}"></td>
                         <td th:text="${result.errorMessage}"></td>
                     </tr>

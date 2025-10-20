@@ -66,8 +66,6 @@ public class UploadController {
             return "redirect:/";
         }
 
-        log.info("Stored files: {}", String.join(", ", storedFileNames));
-
         Map<String, MultipartFile> fileMap = new HashMap<>();
         for (MultipartFile file : files) {
             if (file.getOriginalFilename() != null) {
@@ -109,7 +107,7 @@ public class UploadController {
             }
         }
 
-        redirectAttributes.addFlashAttribute("message", "파일이 성공적으로 업로드되었고 CER 계산이 완료되었습니다.");
+        redirectAttributes.addFlashAttribute("message", "STT가 성공적으로 실행되었습니다.");
         redirectAttributes.addFlashAttribute("cerResults", cerResults);
         session.setAttribute("cerResults", cerResults);
 
