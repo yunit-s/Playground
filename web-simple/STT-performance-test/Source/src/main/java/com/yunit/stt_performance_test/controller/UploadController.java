@@ -86,6 +86,7 @@ public class UploadController {
                     try {
                         String referenceText = new String(referenceTextFile.getBytes(), StandardCharsets.UTF_8);
                         String hypothesisText = sttService.convertSpeechToText(audioFile);
+                        log.info("audioFileName={}, hypothesisText={}", audioFile.getOriginalFilename(), hypothesisText);
                         double cerModeA = cerCalculatorService.calculateCerModeA(referenceText, hypothesisText);
                         double cerModeB = cerCalculatorService.calculateCerModeB(referenceText, hypothesisText);
 

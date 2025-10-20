@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
-@Profile("!local")
+@Profile("!mock")
 public class FeignSttService implements SttService {
 
     private final SttApiClient sttApiClient;

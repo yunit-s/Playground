@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 
 @Slf4j
 @Service
-@Profile("local")
+@Profile("mock")
 public class MockSttService implements SttService {
 
     @Override

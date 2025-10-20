@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-@FeignClient(name = "stt-api", url = "http://10.200.1.22:55081")
+@FeignClient(name = "stt-api", url = "${stt.api.url}")
 public interface SttApiClient {
 
     @PostMapping(value = "/client/batch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
