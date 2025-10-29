@@ -45,7 +45,7 @@ public class ExcelService {
             // Header
             String[] headers = {
                 "파일", "참조 텍스트", "가설 텍스트",
-                "CER(A)", "S(A)", "D(A)", "I(A)", "N(A)",
+                "CER", "S", "D", "I", "N",
                 // "CER(B)", "S(B)", "D(B)", "I(B)", "N(B)",
                 "오류"
             };
