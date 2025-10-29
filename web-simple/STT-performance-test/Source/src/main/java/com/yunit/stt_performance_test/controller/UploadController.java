@@ -1,6 +1,7 @@
 package com.yunit.stt_performance_test.controller;
 
 import com.yunit.stt_performance_test.dto.CerResultDto;
+import com.yunit.stt_performance_test.dto.DetailedEditDistance;
 import com.yunit.stt_performance_test.service.CerCalculatorService;
 import com.yunit.stt_performance_test.service.ExcelService;
 import com.yunit.stt_performance_test.service.FileStorageService;
@@ -85,24 +86,49 @@ public class UploadController {
                         String referenceText = new String(referenceTextFile.getBytes(), StandardCharsets.UTF_8);
                         String hypothesisText = sttService.convertSpeechToText(audioFile);
                         log.info("audioFileName={}, hypothesisText={}", audioFile.getOriginalFilename(), hypothesisText);
-                        double cerModeA = cerCalculatorService.calculateCerModeA(referenceText, hypothesisText);
-                        double cerModeB = cerCalculatorService.calculateCerModeB(referenceText, hypothesisText);
 
-                        cerResults.add(new CerResultDto(
-                                audioFile.getOriginalFilename(), referenceText, hypothesisText, cerModeA, cerModeB, null));
+                        // Mode A (with whitespace)
+                        DetailedEditDistance detailsA = cerCalculatorService.calculateDetailedEditDistance(referenceText, hypothesisText);
+                        int refLengthA = referenceText.length();
+                        double cerModeA = (refLengthA == 0) ? (hypothesisText.length() > 0 ? 1.0 : 0.0) : (double) detailsA.getTotalDistance() / refLengthA;
+
+                        // Mode B (without whitespace)
+                        String cleanedReference = referenceText.replaceAll("\\s", "");
+                        String cleanedHypothesis = hypothesisText.replaceAll("\\s", "");
+                        DetailedEditDistance detailsB = cerCalculatorService.calculateDetailedEditDistance(cleanedReference, cleanedHypothesis);
+                        int refLengthB = cleanedReference.length();
+                        double cerModeB = (refLengthB == 0) ? (cleanedHypothesis.length() > 0 ? 1.0 : 0.0) : (double) detailsB.getTotalDistance() / refLengthB;
+
+                        CerResultDto resultDto = new CerResultDto();
+                        resultDto.setOriginalFileName(audioFile.getOriginalFilename());
+                        resultDto.setReferenceText(referenceText);
+                        resultDto.setHypothesisText(hypothesisText);
+                        resultDto.setCerModeA(cerModeA);
+                        resultDto.setSubstitutionsModeA(detailsA.getSubstitutions());
+                        resultDto.setDeletionsModeA(detailsA.getDeletions());
+                        resultDto.setInsertionsModeA(detailsA.getInsertions());
+                        resultDto.setReferenceLengthModeA(refLengthA);
+                        resultDto.setCerModeB(cerModeB);
+                        resultDto.setSubstitutionsModeB(detailsB.getSubstitutions());
+                        resultDto.setDeletionsModeB(detailsB.getDeletions());
+                        resultDto.setInsertionsModeB(detailsB.getInsertions());
+                        resultDto.setReferenceLengthModeB(refLengthB);
+
+                        cerResults.add(resultDto);
 
                     } catch (IOException e) {
                         log.error("Error processing file {}: {}", audioFile.getOriginalFilename(), e.getMessage());
-                        cerResults.add(new CerResultDto(
-                                audioFile.getOriginalFilename(), null, null, 0.0, 0.0, "파일 처리 오류"));
+                        CerResultDto errorDto = new CerResultDto();
+                        errorDto.setOriginalFileName(audioFile.getOriginalFilename());
+                        errorDto.setErrorMessage("파일 처리 오류");
+                        cerResults.add(errorDto);
                     }
                 } else {
                     log.warn("No matching .txt file found for audio file: {}", audioFile.getOriginalFilename());
-                    cerResults.add(new CerResultDto(
-                            audioFile.getOriginalFilename(),
-                            null, null, 0.0, 0.0,
-                            "매칭되는 .txt 파일 없음"
-                    ));
+                    CerResultDto errorDto = new CerResultDto();
+                    errorDto.setOriginalFileName(audioFile.getOriginalFilename());
+                    errorDto.setErrorMessage("매칭되는 .txt 파일 없음");
+                    cerResults.add(errorDto);
                 }
             }
         }

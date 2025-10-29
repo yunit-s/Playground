@@ -21,15 +21,20 @@ public class ExcelService {
             CellStyle numericStyle = workbook.createCellStyle();
             numericStyle.setDataFormat(workbook.getCreationHelper().createDataFormat().getFormat("0.0000"));
 
-            // 헤더 생성
-            String[] headers = {"파일", "참조 텍스트", "가설 텍스트", "CER", "오류"};
+            // Header
+            String[] headers = {
+                "파일", "참조 텍스트", "가설 텍스트",
+                "CER(A)", "S(A)", "D(A)", "I(A)", "N(A)",
+                "CER(B)", "S(B)", "D(B)", "I(B)", "N(B)",
+                "오류"
+            };
             Row headerRow = sheet.createRow(0);
             for (int col = 0; col < headers.length; col++) {
                 Cell cell = headerRow.createCell(col);
                 cell.setCellValue(headers[col]);
             }
 
-            // 데이터 생성
+            // Data
             int rowIdx = 1;
             for (CerResultDto result : cerResults) {
                 Row row = sheet.createRow(rowIdx++);
@@ -38,15 +43,25 @@ public class ExcelService {
                 row.createCell(1).setCellValue(result.getReferenceText());
                 row.createCell(2).setCellValue(result.getHypothesisText());
 
-//                Cell cellModeA = row.createCell(3);
-//                cellModeA.setCellValue(result.getCerModeA());
-//                cellModeA.setCellStyle(numericStyle);
+                // Mode A
+                Cell cerA = row.createCell(3);
+                cerA.setCellValue(result.getCerModeA());
+                cerA.setCellStyle(numericStyle);
+                row.createCell(4).setCellValue(result.getSubstitutionsModeA());
+                row.createCell(5).setCellValue(result.getDeletionsModeA());
+                row.createCell(6).setCellValue(result.getInsertionsModeA());
+                row.createCell(7).setCellValue(result.getReferenceLengthModeA());
 
-                Cell cellModeB = row.createCell(3);
-                cellModeB.setCellValue(result.getCerModeB());
-                cellModeB.setCellStyle(numericStyle);
+                // Mode B
+                Cell cerB = row.createCell(8);
+                cerB.setCellValue(result.getCerModeB());
+                cerB.setCellStyle(numericStyle);
+                row.createCell(9).setCellValue(result.getSubstitutionsModeB());
+                row.createCell(10).setCellValue(result.getDeletionsModeB());
+                row.createCell(11).setCellValue(result.getInsertionsModeB());
+                row.createCell(12).setCellValue(result.getReferenceLengthModeB());
 
-                row.createCell(4).setCellValue(result.getErrorMessage());
+                row.createCell(13).setCellValue(result.getErrorMessage());
             }
 
             workbook.write(out);

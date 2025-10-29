@@ -51,8 +51,16 @@
                         <th>파일</th>
                         <th>참조 텍스트(정답 텍스트)</th>
                         <th>가설 텍스트(STT 결과)</th>
-<!--                        <th>CER (Mode A)</th>-->
-                        <th>CER</th>
+                        <th>CER(A)</th>
+                        <th>S(A)</th>
+                        <th>D(A)</th>
+                        <th>I(A)</th>
+                        <th>N(A)</th>
+                        <th>CER(B)</th>
+                        <th>S(B)</th>
+                        <th>D(B)</th>
+                        <th>I(B)</th>
+                        <th>N(B)</th>
                         <th>오류</th>
                     </tr>
                 </thead>
@@ -61,8 +69,16 @@
                         <td th:text="${result.originalFileName}"></td>
                         <td th:text="${result.referenceText}"></td>
                         <td th:text="${result.hypothesisText}"></td>
-<!--                        <td th:text="${#numbers.formatDecimal(result.cerModeA, 1, 4)}"></td>-->
+                        <td th:text="${#numbers.formatDecimal(result.cerModeA, 1, 4)}"></td>
+                        <td th:text="${result.substitutionsModeA}"></td>
+                        <td th:text="${result.deletionsModeA}"></td>
+                        <td th:text="${result.insertionsModeA}"></td>
+                        <td th:text="${result.referenceLengthModeA}"></td>
                         <td th:text="${#numbers.formatDecimal(result.cerModeB, 1, 4)}"></td>
+                        <td th:text="${result.substitutionsModeB}"></td>
+                        <td th:text="${result.deletionsModeB}"></td>
+                        <td th:text="${result.insertionsModeB}"></td>
+                        <td th:text="${result.referenceLengthModeB}"></td>
                         <td th:text="${result.errorMessage}"></td>
                     </tr>
                 </tbody>
