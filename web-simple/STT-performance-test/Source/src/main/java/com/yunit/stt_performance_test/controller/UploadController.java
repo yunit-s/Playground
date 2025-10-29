@@ -2,6 +2,7 @@ package com.yunit.stt_performance_test.controller;
 
 import com.yunit.stt_performance_test.dto.CerResultDto;
 import com.yunit.stt_performance_test.dto.DetailedEditDistance;
+import com.yunit.stt_performance_test.dto.TotalCerResultDto;
 import com.yunit.stt_performance_test.service.CerCalculatorService;
 import com.yunit.stt_performance_test.service.ExcelService;
 import com.yunit.stt_performance_test.service.FileStorageService;
@@ -77,7 +78,7 @@ public class UploadController {
         List<CerResultDto> cerResults = new ArrayList<>();
 
         for (MultipartFile audioFile : files) {
-            if (audioFile.getOriginalFilename() != null && (audioFile.getOriginalFilename().endsWith(".wav") || audioFile.getOriginalFilename().endsWith(".mp3"))) {
+            if (audioFile.getOriginalFilename() != null && audioFile.getOriginalFilename().endsWith(".wav")) {
                 String baseName = getBaseName(audioFile.getOriginalFilename());
                 MultipartFile referenceTextFile = fileMap.get(baseName + ".txt");
 
@@ -133,9 +134,29 @@ public class UploadController {
             }
         }
 
+        // Calculate total result
+        StringBuilder totalReference = new StringBuilder();
+        StringBuilder totalHypothesis = new StringBuilder();
+        for (CerResultDto result : cerResults) {
+            if (result.getReferenceText() != null && result.getHypothesisText() != null) {
+                totalReference.append(result.getReferenceText());
+                totalHypothesis.append(result.getHypothesisText());
+            }
+        }
+
+        TotalCerResultDto totalCerResult = null;
+        if (totalReference.length() > 0) {
+            DetailedEditDistance totalDetails = cerCalculatorService.calculateDetailedEditDistance(totalReference.toString(), totalHypothesis.toString());
+            int totalRefLength = totalReference.length();
+            double totalCer = (totalRefLength == 0) ? 0.0 : (double) totalDetails.getTotalDistance() / totalRefLength;
+            totalCerResult = new TotalCerResultDto(totalCer, totalDetails.getSubstitutions(), totalDetails.getDeletions(), totalDetails.getInsertions(), totalRefLength);
+        }
+
         redirectAttributes.addFlashAttribute("message", "STT가 성공적으로 실행되었습니다.");
         redirectAttributes.addFlashAttribute("cerResults", cerResults);
+        redirectAttributes.addFlashAttribute("totalCerResult", totalCerResult);
         session.setAttribute("cerResults", cerResults);
+        session.setAttribute("totalCerResult", totalCerResult);
 
         return "redirect:/";
     }
@@ -143,13 +164,14 @@ public class UploadController {
     @GetMapping("/download")
     public ResponseEntity<InputStreamResource> downloadExcel(HttpSession session, HttpServletResponse response) throws IOException {
         List<CerResultDto> cerResults = (List<CerResultDto>) session.getAttribute("cerResults");
+        TotalCerResultDto totalCerResult = (TotalCerResultDto) session.getAttribute("totalCerResult");
 
         if (cerResults == null || cerResults.isEmpty()) {
             // 결과가 없을 때, 홈페이지로 리다이렉트
             return ResponseEntity.status(302).header(HttpHeaders.LOCATION, "/").build();
         }
 
-        ByteArrayInputStream in = excelService.createExcelFile(cerResults);
+        ByteArrayInputStream in = excelService.createExcelFile(cerResults, totalCerResult);
 
         // 파일명에 현재 시간 추가 (yyyyMMdd_HHmmssSSS 형식)
         String timeStamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(new java.util.Date());

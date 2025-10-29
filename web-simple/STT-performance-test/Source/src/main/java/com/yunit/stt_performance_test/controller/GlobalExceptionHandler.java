@@ -24,7 +24,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileCountLimitExceededException.class)
     public String handleFileCountLimitException(FileCountLimitExceededException exc, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("message", "한 번에 업로드할 수 있는 파일 개수를 초과했습니다. " + maxFileCount + "개 이하의 파일을 업로드해주세요.");
+        int maxFileCountTemp = maxFileCount - 1;
+        redirectAttributes.addFlashAttribute("message", "한 번에 업로드할 수 있는 파일 개수를 초과했습니다. " + maxFileCountTemp + "개 이하의 파일을 업로드해주세요.");
         return "redirect:/";
     }
 }

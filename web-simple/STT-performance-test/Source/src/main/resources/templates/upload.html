@@ -12,12 +12,12 @@
 
         <form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
             <!-- Hidden file inputs for form submission -->
-            <input type="file" id="wavFiles" name="files" multiple accept=".wav,.mp3" style="display: none;">
+            <input type="file" id="wavFiles" name="files" multiple accept=".wav" style="display: none;">
             <input type="file" id="txtFiles" name="files" multiple accept=".txt" style="display: none;">
 
             <div class="drop-zone-container">
                 <div class="drop-zone-wrapper">
-                    <h3 class="upload-title">음성 파일 (WAV, MP3)</h3>
+                    <h3 class="upload-title">음성 파일 (WAV)</h3>
                     <div id="wav-drop-zone" class="drop-zone">
                         <p>여기에 파일을 드래그 앤 드롭하거나, 이 영역을 클릭하세요.</p>
                     </div>
@@ -42,6 +42,16 @@
 
         <div th:if="${cerResults}" class="cer-results-section">
             <h2>STT 실행 결과</h2>
+
+            <div th:if="${totalCerResult}" class="total-results-summary">
+                <h3>전체 요약 결과</h3>
+                <p>전체 데이터 CER: <span th:text="${#numbers.formatDecimal(totalCerResult.totalCer, 1, 4)}"></span></p>
+                <p>총 대체 텍스트(S): <span th:text="${totalCerResult.totalSubstitutions}"></span></p>
+                <p>총 삭제 텍스트(D): <span th:text="${totalCerResult.totalDeletions}"></span></p>
+                <p>총 삽입 텍스트(I): <span th:text="${totalCerResult.totalInsertions}"></span></p>
+                <p>총 참조 텍스트 길이(N): <span th:text="${totalCerResult.totalReferenceLength}"></span></p>
+            </div>
+
             <div class="download-section" style="text-align: right; margin-bottom: 15px;">
                 <a th:href="@{/download}" class="button">Excel 다운로드</a>
             </div>
@@ -51,16 +61,16 @@
                         <th>파일</th>
                         <th>참조 텍스트(정답 텍스트)</th>
                         <th>가설 텍스트(STT 결과)</th>
-                        <th>CER(A)</th>
-                        <th>S(A)</th>
-                        <th>D(A)</th>
-                        <th>I(A)</th>
-                        <th>N(A)</th>
-                        <th>CER(B)</th>
-                        <th>S(B)</th>
-                        <th>D(B)</th>
-                        <th>I(B)</th>
-                        <th>N(B)</th>
+                        <th>CER</th>
+                        <th>S</th>
+                        <th>D</th>
+                        <th>I</th>
+                        <th>N</th>
+                        <!-- <th>CER(B)</th> -->
+                        <!-- <th>S(B)</th> -->
+                        <!-- <th>D(B)</th> -->
+                        <!-- <th>I(B)</th> -->
+                        <!-- <th>N(B)</th> -->
                         <th>오류</th>
                     </tr>
                 </thead>
@@ -74,11 +84,11 @@
                         <td th:text="${result.deletionsModeA}"></td>
                         <td th:text="${result.insertionsModeA}"></td>
                         <td th:text="${result.referenceLengthModeA}"></td>
-                        <td th:text="${#numbers.formatDecimal(result.cerModeB, 1, 4)}"></td>
-                        <td th:text="${result.substitutionsModeB}"></td>
-                        <td th:text="${result.deletionsModeB}"></td>
-                        <td th:text="${result.insertionsModeB}"></td>
-                        <td th:text="${result.referenceLengthModeB}"></td>
+                        <!-- <td th:text="${#numbers.formatDecimal(result.cerModeB, 1, 4)}"></td> -->
+                        <!-- <td th:text="${result.substitutionsModeB}"></td> -->
+                        <!-- <td th:text="${result.deletionsModeB}"></td> -->
+                        <!-- <td th:text="${result.insertionsModeB}"></td> -->
+                        <!-- <td th:text="${result.referenceLengthModeB}"></td> -->
                         <td th:text="${result.errorMessage}"></td>
                     </tr>
                 </tbody>

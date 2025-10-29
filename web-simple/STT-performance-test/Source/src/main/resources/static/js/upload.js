@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('wavFiles'),
         document.getElementById('wav-file-list'),
         selectedWavFiles,
-        ['audio/wav', 'audio/mpeg'] // Accepts .wav, .mp3
+        ['audio/wav'] // Accepts .wav
     );
 
     // Setup for TXT drop zone
