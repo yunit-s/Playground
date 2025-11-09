@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_basic/photo_detail_page.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 
@@ -62,21 +63,34 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
       itemCount: _photos.length,
       itemBuilder: (context, index) {
         final asset = _photos[index];
-        return Image(
-          image: AssetEntityImageProvider(
-            asset,
-            isOriginal: false, // Load thumbnail
-            thumbnailSize: const ThumbnailSize.square(200),
-          ),
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return const Center(
-              child: Icon(
-                Icons.error,
-                color: Colors.red,
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PhotoDetailPage(
+                  photos: _photos,
+                  initialIndex: index,
+                ),
               ),
             );
           },
+          child: Image(
+            image: AssetEntityImageProvider(
+              asset,
+              isOriginal: false, // Load thumbnail
+              thumbnailSize: const ThumbnailSize.square(200),
+            ),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return const Center(
+                child: Icon(
+                  Icons.error,
+                  color: Colors.red,
+                ),
+              );
+            },
+          ),
         );
       },
     );
